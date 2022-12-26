@@ -1,0 +1,111 @@
+---
+openapi: 3.0.1
+info:
+  title: Сервис - barcode в картинку
+  description: |-
+    Содержит функции для преобразования числового значения barcode в изображения. при этом, \
+    существует два варианта функций:
+    1. Находится в пространстве имён Api и возвращает результат в одном из полей ответа
+    2. Находится в пространстве имён Cdn и возвращает результат как скачиваемый файл. В этом варианте изображения бар \
+    кодов можно непосредственно включать в html документ в виде тега <img>, где в качестве src указывается ссылка на \
+    entry_point в этом сервисе
+  version: v1
+paths:
+  "/api/barcode_to_image/{barcode}":
+    get:
+      summary: Получить изображение по бар коду
+      tags:
+      - BarCodes
+      parameters:
+      - name: barcode
+        in: path
+        description: Штрих код для отображения
+        required: true
+        schema:
+          type: string
+      - name: format
+        in: query
+        required: false
+        description: 'В каком формате отдать изображение. Доступные варианты: svg,
+          png. По умолчанию - svg'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              examples:
+                to_svg:
+                  value:
+                    message: Ok
+                    barcode: |
+                      <?xml version="1.0" encoding="UTF-8"?>
+                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="119px" height="120px" viewBox="0 0 119 120" version="1.1" preserveAspectRatio="none" >
+                      <title>1234567890</title>
+                      <g id="canvas" >
+                      <rect x="0" y="0" width="119px" height="120px" fill="#fff" />
+                      <g id="barcode" fill="#000">
+                      <rect x="10" y="10" width="1px" height="100px" />
+                      <rect x="12" y="10" width="1px" height="100px" />
+                      <rect x="14" y="10" width="3px" height="100px" />
+                      <rect x="18" y="10" width="1px" height="100px" />
+                      <rect x="22" y="10" width="1px" height="100px" />
+                      <rect x="24" y="10" width="1px" height="100px" />
+                      <rect x="26" y="10" width="3px" height="100px" />
+                      <rect x="32" y="10" width="3px" height="100px" />
+                      <rect x="36" y="10" width="3px" height="100px" />
+                      <rect x="40" y="10" width="1px" height="100px" />
+                      <rect x="44" y="10" width="1px" height="100px" />
+                      <rect x="46" y="10" width="1px" height="100px" />
+                      <rect x="50" y="10" width="3px" height="100px" />
+                      <rect x="54" y="10" width="1px" height="100px" />
+                      <rect x="58" y="10" width="3px" height="100px" />
+                      <rect x="64" y="10" width="1px" height="100px" />
+                      <rect x="66" y="10" width="1px" height="100px" />
+                      <rect x="68" y="10" width="1px" height="100px" />
+                      <rect x="72" y="10" width="1px" height="100px" />
+                      <rect x="74" y="10" width="1px" height="100px" />
+                      <rect x="76" y="10" width="3px" height="100px" />
+                      <rect x="82" y="10" width="3px" height="100px" />
+                      <rect x="86" y="10" width="1px" height="100px" />
+                      <rect x="88" y="10" width="3px" height="100px" />
+                      <rect x="92" y="10" width="1px" height="100px" />
+                      <rect x="96" y="10" width="3px" height="100px" />
+                      <rect x="102" y="10" width="1px" height="100px" />
+                      <rect x="104" y="10" width="3px" height="100px" />
+                      <rect x="108" y="10" width="1px" height="100px" />
+
+                      </g></g>
+                      </svg>
+                    format: svg
+        '400':
+          description: arguments error
+          content:
+            application/json:
+              examples:
+                wrong format value:
+                  value:
+                    message: 'Wrong value of format: xml'
+  "/cdn/barcodes/{barcode}":
+    parameters:
+    - name: barcode
+      in: path
+      description: barcode
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Получить Png файл с картинкой штрих кода
+      tags:
+      - CDN
+      parameters:
+      - name: barcode
+        in: path
+        description: Штрих код для отображения
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
