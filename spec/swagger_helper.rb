@@ -27,8 +27,53 @@ RSpec.configure do |config|
 entry_point в этом сервисе',
         version: 'v1'
       },
-      paths: {}
-      # servers: [
+      paths: {},
+      components: {
+        schemas: {
+          error_response: {
+            type: 'object',
+            properties: {
+              message: { type: 'string' }
+            }
+          },
+          options: {
+            type: 'object',
+            properties: {
+              options: { '$ref' => '#/components/schemas/pdf_from_string_params' }
+            }
+          },
+          pdf_from_string_params: {
+            type: 'object',
+            properties: {
+              html_text: { type: 'string',
+                           required: true,
+                           description: 'Основной HTML код который будет преобразован в pdf документ' },
+              header_html: { type: 'string', allowEmptyValue: true, description: 'HTML для заголовков страниц' },
+              footer_html: { type: 'string', allowEmptyValue: true, description: 'HTML для подвалов(footer) страниц' },
+              orientation: { type: 'string',
+                             allowEmptyValue: true,
+                             description: 'Ориентация страницы',
+                             default: 'Portrate',
+                             enum: %w[Potrate Landscape] },
+              page_height: { type: 'integer', allowEmptyValue: true, description: 'Высота страницы в мм' },
+              page_width: { type: 'integer', allowEmptyValue: true, description: 'Ширина страницы в мм' },
+              page_size: { type: 'string', allowEmptyValue: true, default: 'A4', description: 'Размер страницы из стандартных',
+                           enum: %w[A4 Letter] },
+              margin: { '$ref' => '#/components/schemas/margins', allowEmptyValue: true, description: 'Отступ от краёв листа' }
+            },
+          },
+          margins: {
+            type: 'object',
+            properties: {
+              top: { type: 'integer', allowEmptyValue: true },
+              bottom: { type: 'integer', allowEmptyValue: true },
+              right: { type: 'integer', allowEmptyValue: true },
+              left: { type: 'integer', allowEmptyValue: true }
+            }
+          }
+        }
+      }
+          # servers: [
       #   {
       #     url: 'http://{defaultHost}',
       #     variables: {

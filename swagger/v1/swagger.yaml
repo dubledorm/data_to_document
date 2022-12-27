@@ -15,7 +15,7 @@ paths:
     get:
       summary: Получить изображение по бар коду
       tags:
-      - BarCodes
+      - Api
       parameters:
       - name: barcode
         in: path
@@ -87,6 +87,55 @@ paths:
                 wrong format value:
                   value:
                     message: 'Wrong value of format: xml'
+  "/api/html_to_pdf":
+    post:
+      summary: Получить pdf из html
+      tags:
+      - Api
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '400':
+          description: bad arguments
+          content:
+            application/json:
+              examples:
+                simple_response:
+                  value:
+                    message: '["Html text can''t be blank"]'
+                  summary: Не заполнен параметр
+                  description: Параметр html_text должен быть заполнен
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/options"
+            examples:
+              request_example_1:
+                summary: Простой пример
+                value:
+                  options:
+                    html_text: "<!DOCTYPE html><html><head></head><body>Hellow world!</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>This is
+                      header</body></html>"
+                    footer_html: "<!DOCTYPE html><html><head></head><body>This is
+                      footer</body></html>"
+                    orientation: Landscape
+                    page_size: Letter
+                    margin:
+                      top: 50
+              request_example_2:
+                summary: Переменные в header и footer
+                value:
+                  options:
+                    html_text: "<!DOCTYPE html><html><head></head><body>Hellow world!</body></html>"
+                    header_html: <!DOCTYPE html><html><head></head><body>Date <span
+                      class="date"></span> Time <span class="time"></span> Sitepage
+                      <span class="sitepage"></span></body></html>
+                    footer_html: <!DOCTYPE html><html><head></head><body>Page <span
+                      class="page"></span> of <span class="topage"></span> Webpage
+                      <span class="webpage"></span></body></html>
   "/cdn/barcodes/{barcode}":
     parameters:
     - name: barcode
@@ -98,7 +147,7 @@ paths:
     get:
       summary: Получить Png файл с картинкой штрих кода
       tags:
-      - CDN
+      - Cdn
       parameters:
       - name: barcode
         in: path
@@ -109,3 +158,112 @@ paths:
       responses:
         '200':
           description: successful
+  "/cdn/html_to_pdf":
+    post:
+      summary: Получить pdf из html
+      tags:
+      - Cdn
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/options"
+            examples:
+              request_example_1:
+                summary: Простой пример
+                value:
+                  options:
+                    html_text: "<!DOCTYPE html><html><head></head><body>Hellow world!</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>This is
+                      header</body></html>"
+                    footer_html: "<!DOCTYPE html><html><head></head><body>This is
+                      footer</body></html>"
+                    orientation: Landscape
+                    page_size: Letter
+                    margin:
+                      top: 50
+              request_example_2:
+                summary: Переменные в header и footer
+                value:
+                  options:
+                    html_text: "<!DOCTYPE html><html><head></head><body>Hellow world!</body></html>"
+                    header_html: <!DOCTYPE html><html><head></head><body>Date <span
+                      class="date"></span> Time <span class="time"></span> Sitepage
+                      <span class="sitepage"></span></body></html>
+                    footer_html: <!DOCTYPE html><html><head></head><body>Page <span
+                      class="page"></span> of <span class="topage"></span> Webpage
+                      <span class="webpage"></span></body></html>
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        message:
+          type: string
+    options:
+      type: object
+      properties:
+        options:
+          "$ref": "#/components/schemas/pdf_from_string_params"
+    pdf_from_string_params:
+      type: object
+      properties:
+        html_text:
+          type: string
+          required: true
+          description: Основной HTML код который будет преобразован в pdf документ
+        header_html:
+          type: string
+          allowEmptyValue: true
+          description: HTML для заголовков страниц
+        footer_html:
+          type: string
+          allowEmptyValue: true
+          description: HTML для подвалов(footer) страниц
+        orientation:
+          type: string
+          allowEmptyValue: true
+          description: Ориентация страницы
+          default: Portrate
+          enum:
+          - Potrate
+          - Landscape
+        page_height:
+          type: integer
+          allowEmptyValue: true
+          description: Высота страницы в мм
+        page_width:
+          type: integer
+          allowEmptyValue: true
+          description: Ширина страницы в мм
+        page_size:
+          type: string
+          allowEmptyValue: true
+          default: A4
+          description: Размер страницы из стандартных
+          enum:
+          - A4
+          - Letter
+        margin:
+          "$ref": "#/components/schemas/margins"
+          allowEmptyValue: true
+          description: Отступ от краёв листа
+    margins:
+      type: object
+      properties:
+        top:
+          type: integer
+          allowEmptyValue: true
+        bottom:
+          type: integer
+          allowEmptyValue: true
+        right:
+          type: integer
+          allowEmptyValue: true
+        left:
+          type: integer
+          allowEmptyValue: true

@@ -5,7 +5,7 @@ RSpec.describe 'api/barcode', type: :request do
   path '/api/barcode_to_image/{barcode}' do
 
     get('Получить изображение по бар коду') do
-      tags 'BarCodes'
+      tags 'Api'
       produces 'application/json'
       parameter name: :barcode, in: :path, type: :string, description: 'Штрих код для отображения'
       parameter name: :format, in: :query, type: :string, required: false,

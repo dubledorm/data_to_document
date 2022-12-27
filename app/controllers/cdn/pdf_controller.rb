@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Api
+module Cdn
   # Controller for convert to pdf format
   class PdfController < ApplicationController
     include PdfConcern
@@ -8,7 +8,11 @@ module Api
     def html_to_pdf
       pdf_params_hash = pdf_params!.decorate.as_json.deep_symbolize_keys
       pdf = build_pdf(pdf_params_hash)
-      render json: { message: 'Ok', pdf_base64: Base64.strict_encode64(pdf) }, status: 200
+
+      ::Dir::Tmpname.create(%w[html .pdf]) do |tmpname|
+        File.open(tmpname, 'wb') { |file| file.write(pdf) }
+        send_file(tmpname)
+      end
     end
   end
 end

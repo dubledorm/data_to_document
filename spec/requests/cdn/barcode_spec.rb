@@ -7,19 +7,19 @@ RSpec.describe 'cdn/barcode', type: :request do
     parameter name: 'barcode', in: :path, type: :string, description: 'barcode'
 
     get('Получить Png файл с картинкой штрих кода') do
-      tags 'CDN'
+      tags 'Cdn'
       produces 'application/json'
       parameter name: :barcode, in: :path, type: :string, description: 'Штрих код для отображения'
       response(200, 'successful') do
-        let(:barcode) { '123' }
-
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
-          }
-        end
+        # let(:barcode) { '123' }
+        #
+        # after do |example|
+        #   example.metadata[:response][:content] = {
+        #     'application/json' => {
+        #       example: JSON.parse(response.body, symbolize_names: true)
+        #     }
+        #   }
+        # end
         run_test!
       end
     end
