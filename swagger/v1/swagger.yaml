@@ -104,7 +104,7 @@ paths:
       summary: Получить pdf из html
       tags:
       - Api
-      description: |-
+      description: |
         ## Общее описание
         В теле запроса передаётся объект options, содержащий исходные данные и настроечные параметры
         для формирования pdf документа. Описание параметров приведено в схеме запроса.
@@ -127,6 +127,14 @@ paths:
 
         Передача такого документа в качестве footer даст результат:
         >Page 2 of 10
+        ## Использование кириллицы
+        Предполагается, что все HTML передаются в кодировке UTF-8.
+
+        Также, если требуется другая, то это можно указать в секции head. Например:
+
+        ```<head><meta charset="windows-1251 /></head>```
+
+        Но для header и footer кодировку нужно указывать всегда, непосредственно в передаваемом заголовке HTML
       parameters: []
       responses:
         '200':
@@ -171,6 +179,15 @@ paths:
                     footer_html: <!DOCTYPE html><html><head></head><body>Page <span
                       class="page"></span> of <span class="topage"></span> Webpage
                       <span class="webpage"></span></body></html>
+              request_example_3:
+                summary: Кириллица во всех местах
+                value:
+                  options:
+                    html_text: "<!DOCTYPE html><html><head></head><body> Русский текст!</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>Это русский
+                      заголовок - Because charset dose not exist</body></html>"
+                    footer_html: <!DOCTYPE html><html><head><meta charset="UTF-8"
+                      /></head><body>Это русский подвал</body></html>
   "/cdn/barcodes/{barcode}":
     parameters:
     - name: barcode
@@ -212,7 +229,7 @@ paths:
       summary: Получить pdf из html
       tags:
       - Cdn
-      description: |-
+      description: |
         ## Общее описание
         В теле запроса передаётся объект options, содержащий исходные данные и настроечные параметры
         для формирования pdf документа. Описание параметров приведено в схеме запроса.
@@ -235,6 +252,14 @@ paths:
 
         Передача такого документа в качестве footer даст результат:
         >Page 2 of 10
+        ## Использование кириллицы
+        Предполагается, что все HTML передаются в кодировке UTF-8.
+
+        Также, если требуется другая, то это можно указать в секции head. Например:
+
+        ```<head><meta charset="windows-1251 /></head>```
+
+        Но для header и footer кодировку нужно указывать всегда, непосредственно в передаваемом заголовке HTML
       parameters: []
       responses:
         '200':
@@ -269,6 +294,15 @@ paths:
                     footer_html: <!DOCTYPE html><html><head></head><body>Page <span
                       class="page"></span> of <span class="topage"></span> Webpage
                       <span class="webpage"></span></body></html>
+              request_example_3:
+                summary: Кириллица во всех местах
+                value:
+                  options:
+                    html_text: "<!DOCTYPE html><html><head></head><body> Русский текст!</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>Это русский
+                      заголовок - Because charset dose not exist</body></html>"
+                    footer_html: <!DOCTYPE html><html><head><meta charset="UTF-8"
+                      /></head><body>Это русский подвал</body></html>
   "/cdn/many_html_to_pdf":
     post:
       summary: Склеить в один файл несколько html документов

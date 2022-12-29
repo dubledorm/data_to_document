@@ -17,7 +17,7 @@ module PdfConcern
   end
 
   def build_pdf(params_hash)
-    WickedPdf.new.pdf_from_string(params_hash[:html_text], params_hash.except(:html_text))
+    WickedPdf.new.pdf_from_string(params_hash[:html_text], params_hash.except(:html_text).merge(encoding: 'utf-8'))
   end
 
   def many_pdf_params!

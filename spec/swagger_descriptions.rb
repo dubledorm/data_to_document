@@ -21,7 +21,16 @@ HTML_TO_PDF_DESCRIPTION = '## Общее описание
 ```<!DOCTYPE html><html>Page <span class="page"></span> of <span class="topage"></span></html>```
 
 Передача такого документа в качестве footer даст результат:
->Page 2 of 10'
+>Page 2 of 10
+## Использование кириллицы
+Предполагается, что все HTML передаются в кодировке UTF-8.
+
+Также, если требуется другая, то это можно указать в секции head. Например:
+
+```<head><meta charset="windows-1251 /></head>```
+
+Но для header и footer кодировку нужно указывать всегда, непосредственно в передаваемом заголовке HTML
+'
 
 MANY_HTML_TO_PDF_DESCRIPTION = '## Общее описание
 В теле запроса передаётся массив объектов options, аналогичных тем, что передаются в меиоде html_to_pdf.
@@ -51,3 +60,30 @@ html документа, где в качестве src указывается �
 ### Ограничения
 Метод рассчитан на использование кода Interleave 2 of 5. Поэтому на вход принимаем только цифры и их должно быть \
 чётное количество.'
+
+def examples_body_html_to_pdf
+  request_body_example value: {
+    "options": {
+      "html_text": "<!DOCTYPE html><html><head></head><body>Hellow world!</body></html>",
+      "header_html": "<!DOCTYPE html><html><head></head><body>This is header</body></html>",
+      "footer_html": "<!DOCTYPE html><html><head></head><body>This is footer</body></html>",
+      "orientation": "Landscape",
+      "page_size": "Letter",
+      "margin": { "top": 50 }
+    }
+  }, name: 'request_example_1', summary: 'Простой пример'
+  request_body_example value: {
+    "options": {
+      "html_text": "<!DOCTYPE html><html><head></head><body>Hellow world!</body></html>",
+      "header_html": "<!DOCTYPE html><html><head></head><body>Date <span class=\"date\"></span> Time <span class=\"time\"></span> Sitepage <span class=\"sitepage\"></span></body></html>",
+      "footer_html": "<!DOCTYPE html><html><head></head><body>Page <span class=\"page\"></span> of <span class=\"topage\"></span> Webpage <span class=\"webpage\"></span></body></html>"
+    }
+  }, name: 'request_example_2', summary: 'Переменные в header и footer'
+  request_body_example value: {
+    "options": {
+      "html_text": "<!DOCTYPE html><html><head></head><body> Русский текст!</body></html>",
+      "header_html": "<!DOCTYPE html><html><head></head><body>Это русский заголовок - Because charset dose not exist</body></html>",
+      "footer_html": "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /></head><body>Это русский подвал</body></html>"
+    }
+  }, name: 'request_example_3', summary: 'Кириллица во всех местах'
+end
