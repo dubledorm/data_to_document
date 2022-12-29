@@ -8,6 +8,7 @@ RSpec.describe 'cdn/barcode', type: :request do
 
     get('Получить Png файл с картинкой штрих кода') do
       tags 'Cdn'
+      description BARCODE_TO_IMAGE_DESCRIPTION_CDN
       produces 'application/json'
       parameter name: :barcode, in: :path, type: :string, description: 'Штрих код для отображения'
       response(200, 'successful') do

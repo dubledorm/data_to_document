@@ -19,4 +19,13 @@ module PdfConcern
   def build_pdf(params_hash)
     WickedPdf.new.pdf_from_string(params_hash[:html_text], params_hash.except(:html_text))
   end
+
+  def many_pdf_params!
+    options_array = params.required(:options_array)
+    begin
+      options_array.map { |options| HtmlToPdf::PdfFromStringParams.new(options) }
+    rescue StandardError => e
+      raise ArgumentError, e.message
+    end
+  end
 end

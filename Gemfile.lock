@@ -82,6 +82,9 @@ GEM
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
     chunky_png (1.4.0)
+    combine_pdf (1.0.22)
+      matrix
+      ruby-rc4 (>= 0.1.5)
     concurrent-ruby (1.1.10)
     crack (0.4.5)
       rexml
@@ -135,6 +138,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.2)
+    matrix (0.4.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
     minitest (5.16.3)
@@ -257,6 +261,7 @@ GEM
       rubocop (>= 1.33.0, < 2.0)
     ruby-prof (1.4.3)
     ruby-progressbar (1.11.0)
+    ruby-rc4 (0.1.5)
     ruby2_keywords (0.0.5)
     shoulda (3.5.0)
       shoulda-context (~> 1.0, >= 1.0.1)
@@ -309,6 +314,7 @@ DEPENDENCIES
   byebug
   capybara (~> 2.18)
   chunky_png
+  combine_pdf
   database_cleaner
   dotenv-rails
   draper

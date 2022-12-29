@@ -15,5 +15,6 @@ Rails.application.routes.draw do
   namespace :cdn do
     get 'barcodes/:barcode', to: 'barcode#barcode_to_image'
     post 'html_to_pdf', to: 'pdf#html_to_pdf'
+    post 'many_html_to_pdf', to: 'pdf#many_html_to_pdf'
   end
 end

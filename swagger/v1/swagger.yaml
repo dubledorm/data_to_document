@@ -1,12 +1,13 @@
 ---
 openapi: 3.0.1
 info:
-  title: Сервис - barcode в картинку
+  title: Сервис - HtmlToDocument
   description: |-
-    Содержит функции для преобразования числового значения barcode в изображения. при этом, \
-    существует два варианта функций:
-    1. Находится в пространстве имён Api и возвращает результат в одном из полей ответа
-    2. Находится в пространстве имён Cdn и возвращает результат как скачиваемый файл. В этом варианте изображения бар \
+    Содержит функции для преобразования HTML файла в PDF документ.\
+    А также дополнительную функцию для преобрахования числового значения barcode в изображения.\
+    Функции сервиса разделены на две группы:
+    1. Находятся в пространстве имён Api и возвращают результат в одном из полей ответа
+    2. Находятся в пространстве имён Cdn и в качестве ответа возвращают непосредственноа сформированный файл. В этом варианте изображения бар \
     кодов можно непосредственно включать в html документ в виде тега <img>, где в качестве src указывается ссылка на \
     entry_point в этом сервисе
   version: v1
@@ -16,6 +17,15 @@ paths:
       summary: Получить изображение по бар коду
       tags:
       - Api
+      description: |2
+
+        ## Общее описание
+        Метод, для преобразования переданного штрих кода в картинку.
+
+        Уммеет возвращать svg и png. Основной рабочий вариант svg.
+        ### Ограничения
+        Метод рассчитан на использование кода Interleave 2 of 5. Поэтому на вход принимаем только цифры и их должно быть \
+        чётное количество.
       parameters:
       - name: barcode
         in: path
@@ -79,6 +89,8 @@ paths:
                       </g></g>
                       </svg>
                     format: svg
+              schema:
+                "$ref": "#/components/schemas/barcode_response"
         '400':
           description: arguments error
           content:
@@ -92,6 +104,29 @@ paths:
       summary: Получить pdf из html
       tags:
       - Api
+      description: |-
+        ## Общее описание
+        В теле запроса передаётся объект options, содержащий исходные данные и настроечные параметры
+        для формирования pdf документа. Описание параметров приведено в схеме запроса.
+        ### Особенности заполнения полей header_html и footer_html:
+        * В полях передаётся Html документ который будет использоваться для заголовка или подвала каждой страницы
+        * Пример заполнения
+
+        ```<!DOCTYPE html><html>This is header</html>```
+        * Обязателен тег !DOCTYPE html в начале строки
+
+        ### Использование переменных в header_html и footer_html
+        Для того,чтобы была возможность выводить номера страниц в header и footer предусмотрена возможность включать специальные переменные в html код. Список возможных имён переменных:
+        >page, frompage, topage, webpage, section, subsection, date, isodate, time, title, doctitle, sitepage, sitepages
+
+        Для использования переменных, необходимо передать их в качестве имени класса любого элемента. Тогда этот элемент будет заменён на значение переменной.
+
+        Например:
+
+        ```<!DOCTYPE html><html>Page <span class="page"></span> of <span class="topage"></span></html>```
+
+        Передача такого документа в качестве footer даст результат:
+        >Page 2 of 10
       parameters: []
       responses:
         '200':
@@ -148,6 +183,20 @@ paths:
       summary: Получить Png файл с картинкой штрих кода
       tags:
       - Cdn
+      description: |2-
+
+        ## Общее описание
+        Метод, для преобразования переданного штрих кода в картинку.
+
+        Возвращает сформированный файл в формате png. Полученное изображение можно непосредственно включать в тег <img> \
+        html документа, где в качестве src указывается ссылка на данный метод.
+
+        Например:
+
+        ```<img src="http:server_name:port/cdn/barcodes/1234567890">```
+        ### Ограничения
+        Метод рассчитан на использование кода Interleave 2 of 5. Поэтому на вход принимаем только цифры и их должно быть \
+        чётное количество.
       parameters:
       - name: barcode
         in: path
@@ -163,6 +212,29 @@ paths:
       summary: Получить pdf из html
       tags:
       - Cdn
+      description: |-
+        ## Общее описание
+        В теле запроса передаётся объект options, содержащий исходные данные и настроечные параметры
+        для формирования pdf документа. Описание параметров приведено в схеме запроса.
+        ### Особенности заполнения полей header_html и footer_html:
+        * В полях передаётся Html документ который будет использоваться для заголовка или подвала каждой страницы
+        * Пример заполнения
+
+        ```<!DOCTYPE html><html>This is header</html>```
+        * Обязателен тег !DOCTYPE html в начале строки
+
+        ### Использование переменных в header_html и footer_html
+        Для того,чтобы была возможность выводить номера страниц в header и footer предусмотрена возможность включать специальные переменные в html код. Список возможных имён переменных:
+        >page, frompage, topage, webpage, section, subsection, date, isodate, time, title, doctitle, sitepage, sitepages
+
+        Для использования переменных, необходимо передать их в качестве имени класса любого элемента. Тогда этот элемент будет заменён на значение переменной.
+
+        Например:
+
+        ```<!DOCTYPE html><html>Page <span class="page"></span> of <span class="topage"></span></html>```
+
+        Передача такого документа в качестве footer даст результат:
+        >Page 2 of 10
       parameters: []
       responses:
         '200':
@@ -197,13 +269,94 @@ paths:
                     footer_html: <!DOCTYPE html><html><head></head><body>Page <span
                       class="page"></span> of <span class="topage"></span> Webpage
                       <span class="webpage"></span></body></html>
+  "/cdn/many_html_to_pdf":
+    post:
+      summary: Склеить в один файл несколько html документов
+      tags:
+      - Cdn
+      description: |-
+        ## Общее описание
+        В теле запроса передаётся массив объектов options, аналогичных тем, что передаются в меиоде html_to_pdf.
+
+        Для каждого из таких options формируется pdf документ. После создания, pdf документ приклеивается к предыдущему.
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/options_array"
+            examples:
+              request_example_1:
+                summary: Простой пример
+                value:
+                  options_array:
+                  - html_text: "<!DOCTYPE html><html><head></head><body>This is first
+                      document</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>This is
+                      header of first focument</body></html>"
+                    footer_html: "<!DOCTYPE html><html><head></head><body>This is
+                      footer of first focument</body></html>"
+                  - html_text: "<!DOCTYPE html><html><head></head><body>This is second
+                      document</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>This is
+                      header of second document</body></html>"
+                    footer_html: "<!DOCTYPE html><html><head></head><body>This is
+                      footer of second document</body></html>"
+              request_example_2:
+                summary: Разные размеры документов
+                value:
+                  options_array:
+                  - html_text: "<!DOCTYPE html><html><head></head><body>This is first
+                      document</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>This is
+                      header of first focument</body></html>"
+                    footer_html: "<!DOCTYPE html><html><head></head><body>This is
+                      footer of first focument</body></html>"
+                    orientation: Landscape
+                  - html_text: "<!DOCTYPE html><html><head></head><body>This is second
+                      document</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>This is
+                      header of second document</body></html>"
+                    footer_html: "<!DOCTYPE html><html><head></head><body>This is
+                      footer of second document</body></html>"
+                    page_width: 100
+                    page_height: 50
+                  - html_text: "<!DOCTYPE html><html><head></head><body>This is third
+                      document</body></html>"
+                    header_html: "<!DOCTYPE html><html><head></head><body>This is
+                      header of third document</body></html>"
+                    footer_html: "<!DOCTYPE html><html><head></head><body>This is
+                      footer of third document</body></html>"
+                    page_size: Letter
 components:
   schemas:
+    options_array:
+      type: object
+      properties:
+        options_array:
+          type: array
+          items:
+            "$ref": "#/components/schemas/options"
     error_response:
       type: object
       properties:
         message:
           type: string
+    barcode_response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Всегда Ок.
+        barcode:
+          type: string
+          description: Картинка штрихкода в нужном формате
+        format:
+          type: string
+          description: svg/png
     options:
       type: object
       properties:
@@ -219,11 +372,15 @@ components:
         header_html:
           type: string
           allowEmptyValue: true
-          description: HTML для заголовков страниц
+          description: |-
+            HTML для заголовков страниц.\
+             Тег <!DOCTYPE html> в начале обязателен.
         footer_html:
           type: string
           allowEmptyValue: true
-          description: HTML для подвалов(footer) страниц
+          description: |-
+            HTML для подвалов(footer) страниц.\
+             Тег <!DOCTYPE html> в начале обязателен.
         orientation:
           type: string
           allowEmptyValue: true

@@ -18,11 +18,12 @@ RSpec.configure do |config|
     'v1/swagger.yaml' => {
       openapi: '3.0.1',
       info: {
-        title: 'Сервис - barcode в картинку',
-        description: 'Содержит функции для преобразования числового значения barcode в изображения. при этом, \
-существует два варианта функций:
-1. Находится в пространстве имён Api и возвращает результат в одном из полей ответа
-2. Находится в пространстве имён Cdn и возвращает результат как скачиваемый файл. В этом варианте изображения бар \
+        title: 'Сервис - HtmlToDocument',
+        description: 'Содержит функции для преобразования HTML файла в PDF документ.\
+А также дополнительную функцию для преобрахования числового значения barcode в изображения.\
+Функции сервиса разделены на две группы:
+1. Находятся в пространстве имён Api и возвращают результат в одном из полей ответа
+2. Находятся в пространстве имён Cdn и в качестве ответа возвращают непосредственноа сформированный файл. В этом варианте изображения бар \
 кодов можно непосредственно включать в html документ в виде тега <img>, где в качестве src указывается ссылка на \
 entry_point в этом сервисе',
         version: 'v1'
@@ -30,10 +31,25 @@ entry_point в этом сервисе',
       paths: {},
       components: {
         schemas: {
+          options_array: {
+            type: 'object',
+            properties: {
+              options_array: { type: 'array',
+                               items: { '$ref' => '#/components/schemas/options' } }
+            }
+          },
           error_response: {
             type: 'object',
             properties: {
               message: { type: 'string' }
+            }
+          },
+          barcode_response: {
+            type: 'object',
+            properties: {
+              message: { type: 'string', description: 'Всегда Ок.' },
+              barcode: { type: 'string', description: 'Картинка штрихкода в нужном формате' },
+              format: { type: 'string', description: 'svg/png' }
             }
           },
           options: {
@@ -48,8 +64,10 @@ entry_point в этом сервисе',
               html_text: { type: 'string',
                            required: true,
                            description: 'Основной HTML код который будет преобразован в pdf документ' },
-              header_html: { type: 'string', allowEmptyValue: true, description: 'HTML для заголовков страниц' },
-              footer_html: { type: 'string', allowEmptyValue: true, description: 'HTML для подвалов(footer) страниц' },
+              header_html: { type: 'string', allowEmptyValue: true, description: 'HTML для заголовков страниц.\
+ Тег <!DOCTYPE html> в начале обязателен.' },
+              footer_html: { type: 'string', allowEmptyValue: true, description: 'HTML для подвалов(footer) страниц.\
+ Тег <!DOCTYPE html> в начале обязателен.' },
               orientation: { type: 'string',
                              allowEmptyValue: true,
                              description: 'Ориентация страницы',

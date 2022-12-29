@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require 'swagger_helper'
+require 'swagger_descriptions'
 
 RSpec.describe 'api/pdf', type: :request do
 
@@ -6,6 +9,7 @@ RSpec.describe 'api/pdf', type: :request do
 
     post('Получить pdf из html') do
       tags 'Api'
+      description HTML_TO_PDF_DESCRIPTION
       consumes 'application/json'
       parameter name: :options, in: :body, schema: { '$ref' => '#/components/schemas/options' }
       request_body_example value: {
@@ -15,7 +19,7 @@ RSpec.describe 'api/pdf', type: :request do
           "footer_html":"<!DOCTYPE html><html><head></head><body>This is footer</body></html>",
           "orientation": "Landscape",
           "page_size": "Letter",
-          "margin": {"top": 50 }
+          "margin": { "top": 50 }
         }
       }, name: 'request_example_1', summary: 'Простой пример'
       request_body_example value: {
@@ -35,20 +39,15 @@ RSpec.describe 'api/pdf', type: :request do
       # }, description: 'Html код для преобразования'
 
       response '200', 'successful' do
-        schema type: :object,
-               properties: {
-                 message: { type: :string },
-                 pdf_base64: { type: :string }
-               },
-               required: [ 'message', 'pdf_base64' ]
+        schema '$ref' => '#/components/schemas/error_response'
         run_test!
       end
 
       response '400', 'bad arguments' do
-        schema '$ref' => '#/components/schemas/error_response'
         example 'application/json', :simple_response, {
           message: "[\"Html text can't be blank\"]"
         }, 'Не заполнен параметр', 'Параметр html_text должен быть заполнен'
+        schema '$ref' => '#/components/schemas/error_response'
         run_test!
       end
 

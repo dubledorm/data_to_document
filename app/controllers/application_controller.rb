@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
+# Базовый класс для контроллеров
 class ApplicationController < ActionController::API
 
-  rescue_from ActionController::BadRequest, :with => :bad_request unless Rails.env.development?
-  rescue_from ArgumentError, :with => :bad_request unless Rails.env.development?
+  rescue_from ActionController::BadRequest, with: :bad_request unless Rails.env.development?
+  rescue_from ArgumentError, with: :bad_request unless Rails.env.development?
 
-  def bad_request(e)
-    render json: { message: e.message }, status: 400
+  def bad_request(error)
+    render json: { message: error.message }, status: 400
   end
 end
