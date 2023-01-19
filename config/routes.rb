@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     # post 'html_to_image', to: 'image#html_to_image'
     #
     get 'barcode_to_image/:barcode', to: 'barcode#barcode_to_image'
+    post 'documents/:template_name', to: 'documents#build_report'
   end
 
   namespace :cdn do

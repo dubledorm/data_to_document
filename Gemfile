@@ -25,18 +25,24 @@ gem 'bootsnap', '>= 1.4.2', require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
+gem 'mongoid', '~> 7.0.5'
+
 group :test do
-  gem 'database_cleaner'
+  # gem 'database_cleaner'
+  gem 'database_cleaner-mongoid'
   gem "factory_girl_rails" , '~> 1.7.0'
-  gem "test-unit"
-  gem "mocha", :require => false
-  gem 'capybara', '~> 2.18'
-  gem "launchy"
-  gem "autotest"
-  gem "autotest-rails-pure"
-  gem "autotest-notification"
-  gem 'webmock'
-  gem 'ruby-prof'
+  gem 'mongoid-rspec'
+
+  # gem "factory_girl_rails" , '~> 1.7.0'
+  # gem "test-unit"
+  # gem "mocha", :require => false
+  # gem 'capybara', '~> 2.18'
+  # gem "launchy"
+  # gem "autotest"
+  # gem "autotest-rails-pure"
+  # gem "autotest-notification"
+  # gem 'webmock'
+  # gem 'ruby-prof'
 end
 
 group :development, :test do
