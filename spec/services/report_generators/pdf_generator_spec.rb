@@ -7,7 +7,7 @@ RSpec.describe ReportGenerators::PdfGenerator do
     context 'when only simple functions use' do
       let!(:template) do
         FactoryGirl.create :template, updated_at: Time.now,
-                           content: BSON::Binary.new('<html>{{Title}}<br>{{Body}}</html>')
+                           content: BSON::Binary.new('<html>#[Title]<br>#[Body]</html>')
       end
 
       let!(:template_info) do
@@ -20,7 +20,7 @@ RSpec.describe ReportGenerators::PdfGenerator do
       let(:pdf_generator) { described_class.new(template_info, report_params_dictionary) }
 
       it 'should replace source string' do
-        expect(pdf_generator.replace_tags_in_template('<html>{{Title}}<br>{{Body}}</html>')).to eq('<html>Заголовок<br>Тело документа</html>')
+        expect(pdf_generator.replace_tags_in_template('<html>#[Title]<br>#[Body]</html>')).to eq('<html>Заголовок<br>Тело документа</html>')
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe ReportGenerators::PdfGenerator do
       end
 
       let(:report_params_dictionary) do
-        { 'result' => [%w[_1 _2 _3], %w[_4 _5 _6], %w[_7 _8 {{DeepFunction}}]],
+        { 'result' => [%w[_1 _2 _3], %w[_4 _5 _6], ['_7', '_8', '#[DeepFunction]']],
           'Title' => 'The Title',
           'Column1tag' => '_Column1',
           'column3tag' => '_Column3Tag',

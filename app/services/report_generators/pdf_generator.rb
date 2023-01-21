@@ -4,7 +4,7 @@ module ReportGenerators
 
   # Генератор для pdf
   class PdfGenerator < Base
-    REG_EXP_FIND_TAGS = /\{\{[^\{\}]+\}\}/.freeze
+    REG_EXP_FIND_TAGS = /#\[[^\]]+\]/.freeze
 
     def replace_tags_in_template(_template)
       remaining_str = _template
@@ -38,7 +38,7 @@ module ReportGenerators
     end
 
     def clear_tag_string(tag_string)
-      tag_string[2..-3]
+      tag_string[2..-2]
     end
   end
 end
