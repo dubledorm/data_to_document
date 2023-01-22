@@ -48,8 +48,148 @@ RSpec.describe 'api/documents', type: :request do
     parameter name: 'template_name', in: :path, type: :string, description: 'template_name'
 
     get('tags document') do
+      tags 'Api'
+      description 'В шаблоне, имя которого передано в параметре найти и вернуть все функции подстановки с параметрами'
       response(200, 'successful') do
         let(:template_name) { '123' }
+        schema '$ref' => '#/components/schemas/success_tags_response'
+        example 'application/json', 'Пример для шаблона Offer', {
+          "message": "Ok",
+          "tag_list": [
+            {
+              "name": "contractdate",
+              "arguments": {}
+            },
+            {
+              "name": "numbercontract",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointname",
+              "arguments": {}
+            },
+            {
+              "name": "full_company_name",
+              "arguments": {}
+            },
+            {
+              "name": "jrpostcode",
+              "arguments": {}
+            },
+            {
+              "name": "jrcityname",
+              "arguments": {}
+            },
+            {
+              "name": "jraddress",
+              "arguments": {}
+            },
+            {
+              "name": "phpostcode",
+              "arguments": {}
+            },
+            {
+              "name": "phcityname",
+              "arguments": {}
+            },
+            {
+              "name": "phaddress",
+              "arguments": {}
+            },
+            {
+              "name": "phone_number",
+              "arguments": {}
+            },
+            {
+              "name": "calcaccount",
+              "arguments": {}
+            },
+            {
+              "name": "bankname",
+              "arguments": {}
+            },
+            {
+              "name": "coraccount",
+              "arguments": {}
+            },
+            {
+              "name": "bik",
+              "arguments": {}
+            },
+            {
+              "name": "inn",
+              "arguments": {}
+            },
+            {
+              "name": "ogrn",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointname",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointjuridicaladdress",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointphisicaladdress",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointphone",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointpaymentaccount",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointbankname",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointcorrespondentaccount",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointbic",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointinnkpp",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointogrn",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointshortname",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointdecreenumber",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointdecreedate",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointshortname",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointdecreenumber",
+              "arguments": {}
+            },
+            {
+              "name": "phpickpointdecreedate",
+              "arguments": {}
+            }
+          ]
+        }
 
         after do |example|
           example.metadata[:response][:content] = {
@@ -58,6 +198,14 @@ RSpec.describe 'api/documents', type: :request do
             }
           }
         end
+        run_test!
+      end
+
+      response(400, 'arguments error') do
+        schema '$ref' => '#/components/schemas/erroe_response'
+        example 'application/json', 'wrong format value', {
+          message: 'Wrong value of format: xml'
+        }
         run_test!
       end
     end

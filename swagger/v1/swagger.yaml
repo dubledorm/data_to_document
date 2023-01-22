@@ -256,9 +256,94 @@ paths:
         type: string
     get:
       summary: tags document
+      tags:
+      - Api
+      description: В шаблоне, имя которого передано в параметре найти и вернуть все
+        функции подстановки с параметрами
       responses:
         '200':
           description: successful
+          content:
+            application/json:
+              examples:
+                Пример для шаблона Offer:
+                  value:
+                    message: Ok
+                    tag_list:
+                    - name: contractdate
+                      arguments: {}
+                    - name: numbercontract
+                      arguments: {}
+                    - name: phpickpointname
+                      arguments: {}
+                    - name: full_company_name
+                      arguments: {}
+                    - name: jrpostcode
+                      arguments: {}
+                    - name: jrcityname
+                      arguments: {}
+                    - name: jraddress
+                      arguments: {}
+                    - name: phpostcode
+                      arguments: {}
+                    - name: phcityname
+                      arguments: {}
+                    - name: phaddress
+                      arguments: {}
+                    - name: phone_number
+                      arguments: {}
+                    - name: calcaccount
+                      arguments: {}
+                    - name: bankname
+                      arguments: {}
+                    - name: coraccount
+                      arguments: {}
+                    - name: bik
+                      arguments: {}
+                    - name: inn
+                      arguments: {}
+                    - name: ogrn
+                      arguments: {}
+                    - name: phpickpointname
+                      arguments: {}
+                    - name: phpickpointjuridicaladdress
+                      arguments: {}
+                    - name: phpickpointphisicaladdress
+                      arguments: {}
+                    - name: phpickpointphone
+                      arguments: {}
+                    - name: phpickpointpaymentaccount
+                      arguments: {}
+                    - name: phpickpointbankname
+                      arguments: {}
+                    - name: phpickpointcorrespondentaccount
+                      arguments: {}
+                    - name: phpickpointbic
+                      arguments: {}
+                    - name: phpickpointinnkpp
+                      arguments: {}
+                    - name: phpickpointogrn
+                      arguments: {}
+                    - name: phpickpointshortname
+                      arguments: {}
+                    - name: phpickpointdecreenumber
+                      arguments: {}
+                    - name: phpickpointdecreedate
+                      arguments: {}
+                    - name: phpickpointshortname
+                      arguments: {}
+                    - name: phpickpointdecreenumber
+                      arguments: {}
+                    - name: phpickpointdecreedate
+                      arguments: {}
+        '400':
+          description: arguments error
+          content:
+            application/json:
+              examples:
+                wrong format value:
+                  value:
+                    message: 'Wrong value of format: xml'
   "/api/html_to_pdf":
     post:
       summary: Получить pdf из html
@@ -680,6 +765,26 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/options"
+    tag_and_arguments_hash:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя тега
+        arguments:
+          type: object
+          description: Список аргументов
+    success_tags_response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Всегда Ок.
+        tag_list:
+          type: array
+          description: Список функций подстановки с параметрами
+          items:
+            "$ref": "#/components/schemas/tag_and_arguments_hash"
     success_document_response:
       type: object
       properties:

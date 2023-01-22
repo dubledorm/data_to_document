@@ -44,6 +44,22 @@ entry_point в этом сервисе',
                                items: { '$ref' => '#/components/schemas/options' } }
             }
           },
+          tag_and_arguments_hash: {
+            type: 'object',
+            properties: {
+              name: { type: 'string', description: 'Имя тега' },
+              arguments: { type: 'object', description: 'Список аргументов' }
+            }
+          },
+          success_tags_response: {
+            type: 'object',
+            properties: {
+              message: { type: 'string', description: 'Всегда Ок.' },
+              tag_list: { type: 'array', description: 'Список функций подстановки с параметрами',
+                          items: { '$ref' => '#/components/schemas/tag_and_arguments_hash' }
+                        }
+            }
+          },
           success_document_response: {
             type: 'object',
             properties: {
