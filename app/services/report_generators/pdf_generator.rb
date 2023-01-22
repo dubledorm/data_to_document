@@ -24,6 +24,17 @@ module ReportGenerators
       WickedPdf.new.pdf_from_string(_prepared_template, encoding: 'utf-8')
     end
 
+    # Найти все тэги в документе и вернуть их в виде массива tag_and_arguments_hash
+    def tag_list
+      result = []
+      template_source.scan(REG_EXP_FIND_TAGS) do |tag_string|
+        tag_and_arguments_hash = TagParseService.parse!(clear_tag_string(tag_string))
+        result << tag_and_arguments_hash
+      end
+
+      result
+    end
+
     private
 
     # На основании tag_string найти функцию подстановки

@@ -7,5 +7,11 @@ module Api
       report_content = CreateReportService.call(params.required(:template_name), params.required(:template_params))
       render json: { message: 'Ok', pdf_base64: Base64.strict_encode64(report_content) }, status: 200
     end
+
+    def tags
+      template_info = TemplateInfoService.find_by_name!(params.required(:template_name))
+      generator = ReportGenerators::PdfGenerator.new(template_info, {})
+      render json: { message: 'Ok', tag_list: generator.tag_list }, status: 200
+    end
   end
 end

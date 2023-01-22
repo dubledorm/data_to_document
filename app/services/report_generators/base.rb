@@ -15,9 +15,11 @@ module ReportGenerators
     end
 
     def generate
-      template = @template_info.template.content.data
+      template = template_source
       prepared_template = replace_tags_in_template(template)
       generate_report(prepared_template)
+    rescue ReplaceFunctions::ReplaceFunctionError => e
+      raise ActionController::BadRequest, e.message
     end
 
     protected
@@ -42,6 +44,10 @@ module ReportGenerators
     def build_function_instance(tag_and_arguments_hash, output_content)
       ReplaceFunctions::Factory.build(tag_and_arguments_hash, @template_info.output_format)
                                .new(@report_params_dictionary, output_content, tag_and_arguments_hash)
+    end
+
+    def template_source
+      @template_info.template.content.data.force_encoding('UTF-8')
     end
 
     def stringify_and_down_keys(hash)

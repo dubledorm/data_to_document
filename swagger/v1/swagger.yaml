@@ -99,6 +99,166 @@ paths:
                 wrong format value:
                   value:
                     message: 'Wrong value of format: xml'
+  "/api/documents/{template_name}":
+    parameters:
+    - name: template_name
+      in: path
+      description: template_name
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Построить отчёт
+      tags:
+      - Api
+      description: |
+        ## Общее описание
+        Метод формирует отчёт на основе шаблона в БД, имя которого передаётся в параметре строки запроса,
+        и списка подстановки, который передаётся как template_params в теле запроса.
+        ### Теги или функции подстановки
+        Для того, чтобы в отчёт можно было передавать данные, в тело шаблона вставляются специальные последовательности,
+        называемые тегами или функциями подстановки.
+        Вид такой последовательности следующий:
+        ```
+        #[ИмяТега(необязательные параметры)]
+        ```
+        Если параметры для тега не требуются, то круглые скобки могут быть опущены.
+        Например, все следующие последовательности корректны:
+
+        ```
+        #[Title]
+        #[Title()]
+        #[SomeBarcode(asBarcode=true)]
+        ```
+        ### Список подстановки
+        Представляет собой список ключ-значение, содержащий в качестве ключей имена тегов(функция подстановки), а в качестве значений
+        собственно значение, которым будет заменяться ключ.
+        Важно, что значение может быть не только строкой. Его тип зависит от параметров функции подстановки.
+
+        ### Существующие параметры функций подстановки
+        #### Баркод как картинка
+        Пример: ```#[SomeBarcode(asBarcode=true)]```
+        В списке подстановки должен быть передан "SomeBarcode": "1234567890". Этот код будет преобразован в картинку и вставлен в отчёт
+        #### Таблица
+        Пример:
+        ```
+        #[SomeName(asTable=true)]
+        #[SomeName(asTable=true, addRows: true)]
+        #[SomeName(asTable=true, addRows: false)]
+        ```
+
+        В списке подстановки должен быть передан
+        ```
+        "SomeName": [["Строка 1, колонка 1", "Строка 1, колонка 2", "Строка 1, колонка 3"], ["Строка 2, колонка 1", "Строка 2, колонка 2", "Строка 2, колонка 3"]].
+        ```
+
+        Т.е. массив строк.
+        Сама функция подстановки должна располагаться в верхнем левом углу таблицы(на первой строке с данными, не в заголовке).
+        Заполнение начнётся непосредственно с клетки, где расположена функция подстановки и пойдёт с лева на право и с верху вниз.
+        При этом, ориентироваться алгоритм будет на переданный массив, а не на шаблон.
+        Существует дополнительный параметр функции подстановки - addRows
+        Если он установлен в true (значение по умолчанию), то заполнив первую строку алгоритм будет добавлять такую же строчку для
+        каждой следующей строки отчёта. Т.е. таблица расширяемая.
+        Если установлен в false, то предполагается, что все строки уже есть в шаблоне и алгоритм будет искать их там. Т.е. таблица не расширяемая.
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              examples:
+                Простой пример:
+                  value:
+                    message: Ok
+                    pdf_base64: Сформированнный файл в base64
+        '400':
+          description: arguments error
+          content:
+            application/json:
+              examples:
+                wrong format value:
+                  value:
+                    message: 'Wrong value of format: xml'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/replace_dictionary"
+            examples:
+              request_example_1:
+                summary: Простой пример
+                value:
+                  template_params:
+                    Full_Company_name: Общество с ограниченной ответственностью "СИНЕРГИЯ"
+                    FIOWriteContract: Киселева Виктория Олеговна
+                    FIOWritePost: Директор
+                    BasicWriteContract: Устава
+              request_example_2:
+                summary: Пример с использованием таблицы
+                value:
+                  template_params:
+                    title: Какой-то заголовок
+                    table_body:
+                    - - Строка 1, колонка 1
+                      - Строка 1, колонка 2
+                      - Строка 1, колонка 3
+                    - - Строка 2, колонка 1
+                      - Строка 2, колонка 2
+                      - Строка 2, колонка 3
+              request_example_3:
+                summary: Пример для шаблона Offer
+                value:
+                  template_params:
+                    LoginLk: info@l
+                    PasswordLk: linife2016
+                    NumberContract: '9990342022'
+                    ContractDate: 16.05.2022
+                    Full_Company_name: Общество с ограниченной ответственностью "СИНЕРГИЯ"
+                    FIOWriteContract: Киселева Виктория Олеговна
+                    FIOWritePost: Директор
+                    BasicWriteContract: Устава
+                    RetCargoPostCode: '156016'
+                    RetCargoCity: Кострома
+                    RetCargoAddress: Давыдовский 3-й микрорайон, 32
+                    jrPostCode: '156005'
+                    jrCityName: Кострома
+                    jrAddress: пл. Октябрьская, Дом 3
+                    Phone_Number: '79203833451'
+                    INN: 4401147784/440101001
+                    CalcAccount: '40702810547100032115'
+                    BankName: ПАО АКБ "АВАНГАРД"
+                    CorAccount: '30101810000000000201'
+                    BIK: '044525201'
+                    OGRN: '1134401014813'
+                    phpickpointname: ПикПоинт
+                    phpostcode: '123456'
+                    phcityname: Москва
+                    phaddress: Наш адрес
+                    phpickpointjuridicaladdress: Наш юр адрес
+                    phpickpointphisicaladdress: Наш физ адрес
+                    phpickpointphone: '1234556678'
+                    phpickpointpaymentaccount: Сюда платить
+                    phpickpointbankname: Наш банк
+                    phpickpointcorrespondentaccount: кор счёт
+                    phpickpointbic: БИК
+                    phpickpointinnkpp: ИНН
+                    phpickpointogrn: ОГРН
+                    phpickpointshortname: Пик
+                    phpickpointdecreenumber: phpickpointdecreenumber
+                    phpickpointdecreedate: phpickpointdecreedate
+  "/api/documents/{template_name}/tags":
+    parameters:
+    - name: template_name
+      in: path
+      description: template_name
+      required: true
+      schema:
+        type: string
+    get:
+      summary: tags document
+      responses:
+        '200':
+          description: successful
   "/api/html_to_pdf":
     post:
       summary: Получить pdf из html
@@ -224,6 +384,146 @@ paths:
       responses:
         '200':
           description: successful
+  "/cdn/documents/{template_name}":
+    parameters:
+    - name: template_name
+      in: path
+      description: Имя шаблона. Так как он указан в БД в поле name
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Построить отчёт
+      tags:
+      - Cdn
+      description: |
+        ## Общее описание
+        Метод формирует отчёт на основе шаблона в БД, имя которого передаётся в параметре строки запроса,
+        и списка подстановки, который передаётся как template_params в теле запроса.
+        ### Теги или функции подстановки
+        Для того, чтобы в отчёт можно было передавать данные, в тело шаблона вставляются специальные последовательности,
+        называемые тегами или функциями подстановки.
+        Вид такой последовательности следующий:
+        ```
+        #[ИмяТега(необязательные параметры)]
+        ```
+        Если параметры для тега не требуются, то круглые скобки могут быть опущены.
+        Например, все следующие последовательности корректны:
+
+        ```
+        #[Title]
+        #[Title()]
+        #[SomeBarcode(asBarcode=true)]
+        ```
+        ### Список подстановки
+        Представляет собой список ключ-значение, содержащий в качестве ключей имена тегов(функция подстановки), а в качестве значений
+        собственно значение, которым будет заменяться ключ.
+        Важно, что значение может быть не только строкой. Его тип зависит от параметров функции подстановки.
+
+        ### Существующие параметры функций подстановки
+        #### Баркод как картинка
+        Пример: ```#[SomeBarcode(asBarcode=true)]```
+        В списке подстановки должен быть передан "SomeBarcode": "1234567890". Этот код будет преобразован в картинку и вставлен в отчёт
+        #### Таблица
+        Пример:
+        ```
+        #[SomeName(asTable=true)]
+        #[SomeName(asTable=true, addRows: true)]
+        #[SomeName(asTable=true, addRows: false)]
+        ```
+
+        В списке подстановки должен быть передан
+        ```
+        "SomeName": [["Строка 1, колонка 1", "Строка 1, колонка 2", "Строка 1, колонка 3"], ["Строка 2, колонка 1", "Строка 2, колонка 2", "Строка 2, колонка 3"]].
+        ```
+
+        Т.е. массив строк.
+        Сама функция подстановки должна располагаться в верхнем левом углу таблицы(на первой строке с данными, не в заголовке).
+        Заполнение начнётся непосредственно с клетки, где расположена функция подстановки и пойдёт с лева на право и с верху вниз.
+        При этом, ориентироваться алгоритм будет на переданный массив, а не на шаблон.
+        Существует дополнительный параметр функции подстановки - addRows
+        Если он установлен в true (значение по умолчанию), то заполнив первую строку алгоритм будет добавлять такую же строчку для
+        каждой следующей строки отчёта. Т.е. таблица расширяемая.
+        Если установлен в false, то предполагается, что все строки уже есть в шаблоне и алгоритм будет искать их там. Т.е. таблица не расширяемая.
+      parameters: []
+      responses:
+        '200':
+          description: successful. Возвращается сформированный файл отчёта
+        '400':
+          description: arguments error
+          content:
+            application/json:
+              examples:
+                wrong format value:
+                  value:
+                    message: 'Wrong value of format: xml'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/replace_dictionary"
+            examples:
+              request_example_1:
+                summary: Простой пример
+                value:
+                  template_params:
+                    Full_Company_name: Общество с ограниченной ответственностью "СИНЕРГИЯ"
+                    FIOWriteContract: Киселева Виктория Олеговна
+                    FIOWritePost: Директор
+                    BasicWriteContract: Устава
+              request_example_2:
+                summary: Пример с использованием таблицы
+                value:
+                  template_params:
+                    title: Какой-то заголовок
+                    table_body:
+                    - - Строка 1, колонка 1
+                      - Строка 1, колонка 2
+                      - Строка 1, колонка 3
+                    - - Строка 2, колонка 1
+                      - Строка 2, колонка 2
+                      - Строка 2, колонка 3
+              request_example_3:
+                summary: Пример для шаблона Offer
+                value:
+                  template_params:
+                    LoginLk: info@l
+                    PasswordLk: linife2016
+                    NumberContract: '9990342022'
+                    ContractDate: 16.05.2022
+                    Full_Company_name: Общество с ограниченной ответственностью "СИНЕРГИЯ"
+                    FIOWriteContract: Киселева Виктория Олеговна
+                    FIOWritePost: Директор
+                    BasicWriteContract: Устава
+                    RetCargoPostCode: '156016'
+                    RetCargoCity: Кострома
+                    RetCargoAddress: Давыдовский 3-й микрорайон, 32
+                    jrPostCode: '156005'
+                    jrCityName: Кострома
+                    jrAddress: пл. Октябрьская, Дом 3
+                    Phone_Number: '79203833451'
+                    INN: 4401147784/440101001
+                    CalcAccount: '40702810547100032115'
+                    BankName: ПАО АКБ "АВАНГАРД"
+                    CorAccount: '30101810000000000201'
+                    BIK: '044525201'
+                    OGRN: '1134401014813'
+                    phpickpointname: ПикПоинт
+                    phpostcode: '123456'
+                    phcityname: Москва
+                    phaddress: Наш адрес
+                    phpickpointjuridicaladdress: Наш юр адрес
+                    phpickpointphisicaladdress: Наш физ адрес
+                    phpickpointphone: '1234556678'
+                    phpickpointpaymentaccount: Сюда платить
+                    phpickpointbankname: Наш банк
+                    phpickpointcorrespondentaccount: кор счёт
+                    phpickpointbic: БИК
+                    phpickpointinnkpp: ИНН
+                    phpickpointogrn: ОГРН
+                    phpickpointshortname: Пик
+                    phpickpointdecreenumber: phpickpointdecreenumber
+                    phpickpointdecreedate: phpickpointdecreedate
   "/cdn/html_to_pdf":
     post:
       summary: Получить pdf из html
@@ -367,6 +667,12 @@ paths:
                     page_size: Letter
 components:
   schemas:
+    replace_dictionary:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Всегда Ок.
     options_array:
       type: object
       properties:
@@ -374,6 +680,15 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/options"
+    success_document_response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Всегда Ок.
+        pdf_base64:
+          type: string
+          description: Сформированный отчёт в Base64
     error_response:
       type: object
       properties:

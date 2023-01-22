@@ -31,11 +31,24 @@ entry_point в этом сервисе',
       paths: {},
       components: {
         schemas: {
+          replace_dictionary: {
+            type: 'object',
+            properties: {
+              message: { type: 'string', description: 'Всегда Ок.' }
+            }
+          },
           options_array: {
             type: 'object',
             properties: {
               options_array: { type: 'array',
                                items: { '$ref' => '#/components/schemas/options' } }
+            }
+          },
+          success_document_response: {
+            type: 'object',
+            properties: {
+              message: { type: 'string', description: 'Всегда Ок.' },
+              pdf_base64: { type: 'string', description: 'Сформированный отчёт в Base64' }
             }
           },
           error_response: {

@@ -14,6 +14,8 @@ class TemplateInfo
   field :output_format, type: Symbol
   field :state, type: Symbol
 
+  embeds_one :options, class_name: 'TemplateOption'
+
   belongs_to :template, optional: true, dependent: :destroy
 
   validates :state, :name, :rus_name, :output_format, presence: :true

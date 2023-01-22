@@ -11,11 +11,13 @@ Rails.application.routes.draw do
     #
     get 'barcode_to_image/:barcode', to: 'barcode#barcode_to_image'
     post 'documents/:template_name', to: 'documents#build_report'
+    get 'documents/:template_name/tags', to: 'documents#tags'
   end
 
   namespace :cdn do
     get 'barcodes/:barcode', to: 'barcode#barcode_to_image'
     post 'html_to_pdf', to: 'pdf#html_to_pdf'
     post 'many_html_to_pdf', to: 'pdf#many_html_to_pdf'
+    post 'documents/:template_name', to: 'documents#build_report'
   end
 end
