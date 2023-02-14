@@ -22,6 +22,8 @@ module ReplaceFunctions
 
       def barcode_image
         Barby::Code25Interleaved.new(@barcode_value).to_svg
+        # Ниже строчка для заполнения текстового блока с цифрами штрих кода.
+        #<text fill="#000000" font-family="Serif" font-size="12" id="svg_36" lengthAdjust="spacing" letter-spacing="0" stroke="#000000" stroke-width="0" text-anchor="middle" transform="rotate(-0.464334, 63.5179, 103.47) matrix(1.54783, 0, 0, 0.866981, -33.2854, 12.3834)" x="62.54" xml:space="preserve" y="109.11">1234567890</text>
       rescue ArgumentError => e
         raise ReplaceFunctionError, "Could not translate #{@barcode_value} to barcode image. Message: #{e.message}"
       end
