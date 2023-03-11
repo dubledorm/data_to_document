@@ -8,7 +8,6 @@ RSpec.describe TemplateInfo, type: :model do
 
     # Factories
     it { expect(template_info).to be_valid }
-    it { should validate_presence_of(:state) }
     it { should validate_presence_of(:name) }
     it { should validate_uniqueness_of(:name) }
     it { should validate_presence_of(:rus_name) }

@@ -2,25 +2,6 @@
 
 require 'rails_helper'
 
-ATTRIBUTES = {
-  'html_text' => 'html_text',
-  'header_html' => '<!DOCTYPE html><html><head></head><body>This is header</body></html>',
-  'footer_html' => '<!DOCTYPE html><html><head></head><body>This is footer</body></html>',
-  'orientation' => 'Portrait',
-  'page_height' => 100,
-  'page_width' => 110,
-  'page_size' => 'A4',
-  'margin' => { 'top' => 10,
-                'bottom' => 20,
-                'left' => 30,
-                'right' => 40 }
-}.freeze
-
-SIMPLE_ATTRIBUTE = { 'html_text' => 'html_text',
-                     'header_html' => 'header_html',
-                     'footer_html' => 'footer_html' }.freeze
-EMPTY_ATTRIBUTES = {}.freeze
-
 class PdfFromStringParamsTestDecorator < HtmlToPdf::PdfFromStringParamsDecorator
 
   def add_script_to_html(source_html)
@@ -29,9 +10,32 @@ class PdfFromStringParamsTestDecorator < HtmlToPdf::PdfFromStringParamsDecorator
 end
 
 RSpec.describe HtmlToPdf::PdfFromStringParamsDecorator, type: :model do
+  let!(:attributes) do
+    {
+      'html_text' => 'html_text',
+      'header_html' => '<!DOCTYPE html><html><head></head><body>This is header</body></html>',
+      'footer_html' => '<!DOCTYPE html><html><head></head><body>This is footer</body></html>',
+      'orientation' => 'Portrait',
+      'page_height' => 100,
+      'page_width' => 110,
+      'page_size' => 'A4',
+      'margin' => { 'top' => 10,
+                    'bottom' => 20,
+                    'left' => 30,
+                    'right' => 40 }
+    }.freeze
+  end
+
+  let!(:simple_attribute) do
+    { 'html_text' => 'html_text',
+      'header_html' => 'header_html',
+      'footer_html' => 'footer_html' }.freeze
+  end
+
+  let(:empty_attributes) { {}.freeze }
 
   describe 'add_script_to_html' do
-    let(:subject) { HtmlToPdf::PdfFromStringParams.new(ATTRIBUTES) }
+    let(:subject) { HtmlToPdf::PdfFromStringParams.new(attributes) }
     let(:decorator) { PdfFromStringParamsTestDecorator.decorate(subject) }
 
     it { expect(decorator.add_script_to_html('<head>')).to eq('<head>' + HtmlToPdf::PdfFromStringParamsDecorator::SCRIPT) }
@@ -56,7 +60,7 @@ RSpec.describe HtmlToPdf::PdfFromStringParamsDecorator, type: :model do
   describe 'use' do
 
     context 'when all attributes exists and all right' do
-      let(:subject) { HtmlToPdf::PdfFromStringParams.new(ATTRIBUTES) }
+      let(:subject) { HtmlToPdf::PdfFromStringParams.new(attributes) }
 
       it { expect(subject.decorate.html_text).to eq('html_text') }
       it { expect(subject.decorate.as_json['html_text']).to eq('html_text') }

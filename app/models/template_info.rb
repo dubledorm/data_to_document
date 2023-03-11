@@ -12,12 +12,14 @@ class TemplateInfo
   field :rus_name, type: String
   field :description, type: String
   field :output_format, type: Symbol
+  field :state, type: Symbol
 
   embeds_one :options, class_name: 'TemplateOption'
 
   belongs_to :template, optional: true, dependent: :destroy
 
-  validates :state, :name, :rus_name, :output_format, presence: :true
+  validates :name, :rus_name, :output_format, presence: :true
+
   validates :output_format, inclusion: { in: OUTPUT_FORMAT_VALUES }
   validates :name, uniqueness: true
 

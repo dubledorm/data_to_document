@@ -2,23 +2,6 @@
 
 require 'rails_helper'
 
-ATTRIBUTES = {
-  header_html: '<!DOCTYPE html><html><head></head><body>This is header</body></html>',
-  footer_html: '<!DOCTYPE html><html><head></head><body>This is footer</body></html>',
-  orientation: :Portrait,
-  page_height: 100,
-  page_width: 110,
-  page_size: :A4,
-  margins: { top: 10,
-             bottom: 20,
-             left: 30,
-             right: 40 }
-}.freeze
-
-SIMPLE_ATTRIBUTE = { header_html: 'header_html',
-                     footer_html: 'footer_html' }.freeze
-EMPTY_ATTRIBUTES = {}.freeze
-
 class TemplateOptionTestDecorator < TemplateOptionDecorator
 
   def add_script_to_html(source_html)
@@ -27,7 +10,30 @@ class TemplateOptionTestDecorator < TemplateOptionDecorator
 end
 
 RSpec.describe TemplateOptionDecorator, type: :model do
-  let(:template_info) { FactoryGirl.create :template_info, options: ATTRIBUTES }
+  let!(:attributes) do
+    {
+      header_html: '<!DOCTYPE html><html><head></head><body>This is header</body></html>',
+      footer_html: '<!DOCTYPE html><html><head></head><body>This is footer</body></html>',
+      orientation: :Portrait,
+      page_height: 100,
+      page_width: 110,
+      page_size: :A4,
+      margins: { top: 10,
+                 bottom: 20,
+                 left: 30,
+                 right: 40 }
+    }.freeze
+  end
+
+  let!(:simple_attribute) do
+    { header_html: 'header_html',
+      footer_html: 'footer_html' }.freeze
+  end
+
+  let!(:empty_attributes) { {}.freeze }
+
+
+  let(:template_info) { FactoryGirl.create :template_info, options: attributes }
 
   describe 'add_script_to_html' do
 

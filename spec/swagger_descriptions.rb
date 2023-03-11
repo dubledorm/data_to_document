@@ -16,7 +16,7 @@ CDN_REPORT_DESCRIPTION = '## Общее описание
 ```
 #[Title]
 #[Title()]
-#[SomeBarcode(asBarcode=true)]
+#[SomeBarcode(asBarcode: true)]
 ```
 ### Список подстановки
 Представляет собой список ключ-значение, содержащий в качестве ключей имена тегов(функция подстановки), а в качестве значений
@@ -25,14 +25,14 @@ CDN_REPORT_DESCRIPTION = '## Общее описание
 
 ### Существующие параметры функций подстановки
 #### Баркод как картинка
-Пример: ```#[SomeBarcode(asBarcode=true)]```
+Пример: ```#[SomeBarcode(asBarcode: true)]```
 В списке подстановки должен быть передан "SomeBarcode": "1234567890". Этот код будет преобразован в картинку и вставлен в отчёт
 #### Таблица
 Пример:
 ```
-#[SomeName(asTable=true)]
-#[SomeName(asTable=true, addRows: true)]
-#[SomeName(asTable=true, addRows: false)]
+#[SomeName(asTable: true)]
+#[SomeName(asTable: true, addRows: true)]
+#[SomeName(asTable: true, addRows: false)]
 ```
 
 В списке подстановки должен быть передан

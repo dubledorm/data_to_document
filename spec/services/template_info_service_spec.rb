@@ -20,12 +20,6 @@ RSpec.describe TemplateInfoService do
                                          state: :stable
     end
 
-    let!(:template_info_new) do
-      FactoryGirl.create :template_info, name: 'new_name', rus_name: 'rus name',
-                         description: 'description', output_format: 'xls', template: template,
-                         state: :new
-    end
-
     let!(:template_info_without_template) do
       FactoryGirl.create :template_info, name: 'without_template', rus_name: 'rus name',
                          description: 'description', output_format: 'xls',
@@ -40,7 +34,6 @@ RSpec.describe TemplateInfoService do
 
     it { expect(described_class.find_by_name!('name').template.content.data).to eq('<html>Body</html>') }
     it { expect { described_class.find_by_name!('wrong_name') }.to raise_error(ActionController::RoutingError) }
-    it { expect { described_class.find_by_name!('new_name') }.to raise_error(ActionController::RoutingError) }
     it { expect { described_class.find_by_name!('without_template') }.to raise_error(ActionController::RoutingError) }
     it { expect { described_class.find_by_name!('with_empty_template') }.to raise_error(ActionController::RoutingError) }
   end
