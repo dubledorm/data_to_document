@@ -21,4 +21,8 @@ class TemplateInfoService
 
     template_info
   end
+
+  def self.template_source(template_info)
+    template_info.template.content.data.force_encoding('UTF-8')
+  end
 end

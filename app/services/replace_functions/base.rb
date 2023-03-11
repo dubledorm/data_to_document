@@ -43,7 +43,7 @@ module ReplaceFunctions
     # Заменить в output_str old_string, которая находится на 0-й позиции
     # на new_value
     def replace_in_begin_string(output_str, old_string, new_value)
-      new_value + output_str[old_string.length..]
+      new_value.to_s + output_str[old_string.length..]
     end
 
     def stringify_and_down_keys(hash)

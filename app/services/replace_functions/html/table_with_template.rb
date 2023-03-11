@@ -17,7 +17,20 @@ module ReplaceFunctions
     # оказывается больше, то ошибка.
     # По умолчанию add_rows == true
     class TableWithTemplate < Table
+      def initialize(report_params_dictionary, output_content, tag_and_arguments_hash)
+        super(report_params_dictionary, output_content, tag_and_arguments_hash)
+        @table_template_info = TemplateInfoService.find_by_name!(tag_and_arguments_hash['arguments']['template'])
+      end
 
+      protected
+
+      attr_reader :table_template_info
+
+      def prepare_column(column_data)
+        report_generator = ReportGenerators::PdfGenerator.new(@table_template_info, column_data)
+        template_source = report_generator.template_source
+        report_generator.replace_tags_in_template(template_source)
+      end
     end
   end
 end

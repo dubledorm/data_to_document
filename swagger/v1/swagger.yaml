@@ -157,6 +157,27 @@ paths:
         Если он установлен в true (значение по умолчанию), то заполнив первую строку алгоритм будет добавлять такую же строчку для
         каждой следующей строки отчёта. Т.е. таблица расширяемая.
         Если установлен в false, то предполагается, что все строки уже есть в шаблоне и алгоритм будет искать их там. Т.е. таблица не расширяемая.
+
+        #### Таблица с шаблоном
+        Сделан на основании вышеописанной Таблицы и повторяет его по поведению.
+        Пример:
+        ```
+        #[SomeName(asTableWithTemplate: true, Template: template_name)]
+        #[SomeName(asTableWithTemplate: true, Template: template_name, addRows: true)]
+        #[SomeName(asTableWithTemplate: true, Template: template_name, addRows: false)]
+        ```
+        Паратметр Template в данном случае обязателен. Он содержит имя ещё одного шаблона, который должен находиться в базе данных.
+        Этот шаблон будет подставлять в каждую клетку таблицы. При этом, подставляемый шаблон может также иметь теги подстановки, которые
+        будут заполнены на основании данных из списка подстановки.
+
+        В списке подстановки должен быть передан
+        ```
+        "SomeName": [[{row: 1, col: 1}, {row: 1, col: 2}, {row: 1, col: 3}],
+                     [{row: 2, col: 1}, {row: 2, col: 2}, {row: 2, col: 2}]].
+        ```
+        т.е. передаётся массив строк, каждая строка представляет собой массив структур, описывающих параметры подстановки в клетке.
+        В данном случае предполагается, что в шаблоне, указанном в параметре Template, есть два параметра row и col. Для каждой клетки
+        значения будут браться из соответствующей позиции в массиве строки
       parameters: []
       responses:
         '200':
@@ -243,6 +264,39 @@ paths:
                     phpickpointshortname: Пик
                     phpickpointdecreenumber: phpickpointdecreenumber
                     phpickpointdecreedate: phpickpointdecreedate
+              request_example_4:
+                summary: TableWithTemplate. (Этикетки)
+                value:
+                  template_params:
+                    invoices:
+                    - - PTNumber1: '770'
+                        PTNumber2: 2-099
+                        ClientName: PickPoint
+                        InvoiceNumber: '15971518657'
+                        InternalNumber: ''
+                        FIO: Вася Пупкин
+                        BarcodeNumber: '202799131044'
+                      - PTNumber1: '771'
+                        PTNumber2: 2-099
+                        ClientName: PickPoint1
+                        InvoiceNumber: '15971518658'
+                        InternalNumber: ''
+                        FIO: Вася Пупкин1
+                        BarcodeNumber: '202799131045'
+                    - - PTNumber1: '772'
+                        PTNumber2: 2-099
+                        ClientName: PickPoint
+                        InvoiceNumber: '15971518659'
+                        InternalNumber: ''
+                        FIO: Вася Пупкин
+                        BarcodeNumber: '202799131046'
+                      - PTNumber1: '773'
+                        PTNumber2: 2-099
+                        ClientName: PickPoint1
+                        InvoiceNumber: '15971518650'
+                        InternalNumber: ''
+                        FIO: Вася Пупкин1
+                        BarcodeNumber: '202799131047'
   "/api/documents/{template_name}/tags":
     parameters:
     - name: template_name
@@ -527,6 +581,27 @@ paths:
         Если он установлен в true (значение по умолчанию), то заполнив первую строку алгоритм будет добавлять такую же строчку для
         каждой следующей строки отчёта. Т.е. таблица расширяемая.
         Если установлен в false, то предполагается, что все строки уже есть в шаблоне и алгоритм будет искать их там. Т.е. таблица не расширяемая.
+
+        #### Таблица с шаблоном
+        Сделан на основании вышеописанной Таблицы и повторяет его по поведению.
+        Пример:
+        ```
+        #[SomeName(asTableWithTemplate: true, Template: template_name)]
+        #[SomeName(asTableWithTemplate: true, Template: template_name, addRows: true)]
+        #[SomeName(asTableWithTemplate: true, Template: template_name, addRows: false)]
+        ```
+        Паратметр Template в данном случае обязателен. Он содержит имя ещё одного шаблона, который должен находиться в базе данных.
+        Этот шаблон будет подставлять в каждую клетку таблицы. При этом, подставляемый шаблон может также иметь теги подстановки, которые
+        будут заполнены на основании данных из списка подстановки.
+
+        В списке подстановки должен быть передан
+        ```
+        "SomeName": [[{row: 1, col: 1}, {row: 1, col: 2}, {row: 1, col: 3}],
+                     [{row: 2, col: 1}, {row: 2, col: 2}, {row: 2, col: 2}]].
+        ```
+        т.е. передаётся массив строк, каждая строка представляет собой массив структур, описывающих параметры подстановки в клетке.
+        В данном случае предполагается, что в шаблоне, указанном в параметре Template, есть два параметра row и col. Для каждой клетки
+        значения будут браться из соответствующей позиции в массиве строки
       parameters: []
       responses:
         '200':
@@ -606,6 +681,39 @@ paths:
                     phpickpointshortname: Пик
                     phpickpointdecreenumber: phpickpointdecreenumber
                     phpickpointdecreedate: phpickpointdecreedate
+              request_example_4:
+                summary: TableWithTemplate. (Этикетки)
+                value:
+                  template_params:
+                    invoices:
+                    - - PTNumber1: '770'
+                        PTNumber2: 2-099
+                        ClientName: PickPoint
+                        InvoiceNumber: '15971518657'
+                        InternalNumber: ''
+                        FIO: Вася Пупкин
+                        BarcodeNumber: '202799131044'
+                      - PTNumber1: '771'
+                        PTNumber2: 2-099
+                        ClientName: PickPoint1
+                        InvoiceNumber: '15971518658'
+                        InternalNumber: ''
+                        FIO: Вася Пупкин1
+                        BarcodeNumber: '202799131045'
+                    - - PTNumber1: '772'
+                        PTNumber2: 2-099
+                        ClientName: PickPoint
+                        InvoiceNumber: '15971518659'
+                        InternalNumber: ''
+                        FIO: Вася Пупкин
+                        BarcodeNumber: '202799131046'
+                      - PTNumber1: '773'
+                        PTNumber2: 2-099
+                        ClientName: PickPoint1
+                        InvoiceNumber: '15971518650'
+                        InternalNumber: ''
+                        FIO: Вася Пупкин1
+                        BarcodeNumber: '202799131047'
   "/cdn/html_to_pdf":
     post:
       summary: Получить pdf из html

@@ -34,6 +34,12 @@ module ReplaceFunctions
         result + @html_row_tools.remainder
       end
 
+      protected
+
+      def prepare_column(column_data)
+        column_data
+      end
+
       private
 
       attr_accessor :table_data, :html_row_tools
@@ -64,9 +70,9 @@ module ReplaceFunctions
           td = source.cut_next_td
           start_tag, _body, end_tag = HtmlRowTools.split_td(td)
           if result.empty?
-            result = "#{column}#{end_tag}"
+            result = "#{prepare_column(column)}#{end_tag}"
           else
-            result += start_tag + column + end_tag
+            result += start_tag + prepare_column(column) + end_tag
           end
         end
 
@@ -80,7 +86,7 @@ module ReplaceFunctions
         columns.each do |column|
           td = source.cut_next_td
           start_tag, _body, end_tag = HtmlRowTools.split_td(td)
-          result += start_tag + column + end_tag
+          result += start_tag + prepare_column(column) + end_tag
         end
 
         html_row.start_tag + result + html_row.end_tag

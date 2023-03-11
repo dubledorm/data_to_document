@@ -22,6 +22,10 @@ module ReportGenerators
       raise ActionController::BadRequest, e.message
     end
 
+    def template_source
+      TemplateInfoService.template_source(@template_info)
+    end
+
     protected
 
     attr_accessor :template_info, :report_params_dictionary
@@ -44,10 +48,6 @@ module ReportGenerators
     def build_function_instance(tag_and_arguments_hash, output_content)
       ReplaceFunctions::Factory.build(tag_and_arguments_hash, @template_info.output_format)
                                .new(@report_params_dictionary, output_content, tag_and_arguments_hash)
-    end
-
-    def template_source
-      @template_info.template.content.data.force_encoding('UTF-8')
     end
 
     def stringify_and_down_keys(hash)
