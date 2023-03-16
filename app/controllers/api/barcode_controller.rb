@@ -16,7 +16,7 @@ module Api
       when 'svg'
         barcode_image = barcode.to_svg
       when 'png'
-        barcode_image = barcode.to_image
+        barcode_image = barcode.to_image.to_json
       else
         render json: { message: "Wrong value of format: #{format}" }, status: 400
         return

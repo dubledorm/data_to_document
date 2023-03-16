@@ -32,9 +32,30 @@ RSpec.describe 'api/barcode', type: :request do
           }
           expect(example.metadata[:response][:content]['application/json'][:example][:format]).to eq('svg')
           expect(example.metadata[:response][:content]['application/json'][:example][:message]).to eq('Ok')
+          expect(example.metadata[:response][:content]['application/json'][:example][:barcode]).to eq(File.read('spec/fixtures/barcode_svg_1234567890.xml'))
         end
         run_test!
       end
+
+      response(200, 'successful') do
+        let(:barcode) { '1234567890' }
+        let(:format) { 'png' }
+        schema '$ref' => '#/components/schemas/barcode_response'
+        example 'application/json', 'получить изображение в png', JSON.parse(File.read('spec/fixtures/barcode_png_1234567890.json'))
+
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {
+              example: JSON.parse(response.body, symbolize_names: true)
+            }
+          }
+          expect(example.metadata[:response][:content]['application/json'][:example].deep_stringify_keys).to eq(JSON.parse(File.read('spec/fixtures/barcode_png_1234567890.json')))
+        end
+        run_test!
+      end
+
+
+
       response(400, 'arguments error') do
         let(:barcode) { '1234567890' }
         let(:format) { 'some wrong format' }
@@ -51,6 +72,18 @@ RSpec.describe 'api/barcode', type: :request do
           expect(example.metadata[:response][:content]['application/json'][:example][:message]).to eq('Wrong value of format: some wrong format')
         end
         run_test!
+      end
+
+      response(400, 'arguments error. Invalid barcode value') do
+        let(:barcode) { '1' }
+        example 'application/json', 'Invalid barcode value', {
+          message: 'data not valid'
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['message']).to eq('data not valid')
+        end
       end
     end
   end
