@@ -197,12 +197,20 @@ paths:
                   value:
                     message: Ok
                     pdf_base64: Сформированнный файл в base64
-        '400':
-          description: arguments error
+        '404':
+          description: Не найден шаблон
           content:
             application/json:
               examples:
-                wrong format value:
+                template not found:
+                  value:
+                    message: 'Not found template with name: The_template_name_dose_not_exist'
+        '400':
+          description: Неправильные аргументы
+          content:
+            application/json:
+              examples:
+                template params required:
                   value:
                     message: 'Wrong value of format: xml'
       requestBody:
@@ -622,12 +630,20 @@ paths:
       responses:
         '200':
           description: successful. Возвращается сформированный файл отчёта
-        '400':
-          description: arguments error
+        '404':
+          description: Не найден шаблон
           content:
             application/json:
               examples:
-                wrong format value:
+                template not found:
+                  value:
+                    message: 'Not found template with name: The_template_name_dose_not_exist'
+        '400':
+          description: Неправильные аргументы
+          content:
+            application/json:
+              examples:
+                template params required:
                   value:
                     message: 'Wrong value of format: xml'
       requestBody:
@@ -769,7 +785,17 @@ paths:
       parameters: []
       responses:
         '200':
-          description: successful
+          description: 'Stream. Returns the pdf file. '
+        '400':
+          description: bad arguments
+          content:
+            application/json:
+              examples:
+                simple_response:
+                  value:
+                    message: '["Html text can''t be blank"]'
+                  summary: Не заполнен параметр
+                  description: Параметр html_text должен быть заполнен
       requestBody:
         content:
           application/json:

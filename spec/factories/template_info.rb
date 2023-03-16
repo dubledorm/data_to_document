@@ -6,4 +6,8 @@ FactoryGirl.define do
     state :new
     output_format :xls
   end
+
+  factory :template_info_with_template, parent: :template_info do
+    template
+  end
 end

@@ -21,7 +21,12 @@ module ReportGenerators
     end
 
     def generate_report(_prepared_template)
-      WickedPdf.new.pdf_from_string(_prepared_template, encoding: 'utf-8')
+      options = { encoding: 'utf-8' }
+      if @template_info.options
+        options.merge!(@template_info.options.decorate.as_json.except('_id').deep_symbolize_keys)
+      end
+
+      WickedPdf.new.pdf_from_string(_prepared_template, options)
     end
 
     # Найти все тэги в документе и вернуть их в виде массива tag_and_arguments_hash

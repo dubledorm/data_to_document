@@ -1,9 +1,9 @@
 require 'swagger_helper'
+require 'swagger_descriptions'
 
 RSpec.describe 'api/documents', type: :request do
 
   path '/api/documents/{template_name}' do
-    # You'll want to customize the parameter types...
     parameter name: 'template_name', in: :path, type: :string, description: 'template_name'
 
     post('Построить отчёт') do
@@ -21,24 +21,41 @@ RSpec.describe 'api/documents', type: :request do
           pdf_base64: "Сформированнный файл в base64"
         }
 
-        let(:template_name) { '123' }
+        let!(:template_info) { FactoryGirl.create :template_info_with_template, name: 'Offer', output_format: :pdf }
+        let(:template_name) { 'Offer' }
+        let(:template_params) { { template_params: { some_param: '' } } }
 
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
-          }
-        end
         run_test!
       end
 
-      response(400, 'arguments error') do
-        schema '$ref' => '#/components/schemas/erroe_response'
-        example 'application/json', 'wrong format value', {
+      response(404, 'Не найден шаблон') do
+        schema '$ref' => '#/components/schemas/error_response'
+        example 'application/json', 'template not found', {
+          message: 'Not found template with name: The_template_name_dose_not_exist'
+        }
+        let!(:template_info) { FactoryGirl.create :template_info_with_template, name: 'Offer', output_format: :pdf }
+        let(:template_name) { 'The_template_name_dose_not_exist' }
+        let(:template_params) { { template_params: { some_param: '' } } }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['message']).to eq('Not found template with name: The_template_name_dose_not_exist')
+        end
+      end
+
+      response(400, 'Неправильные аргументы') do
+        schema '$ref' => '#/components/schemas/error_response'
+        example 'application/json', 'template params required', {
           message: 'Wrong value of format: xml'
         }
-        run_test!
+        let!(:template_info) { FactoryGirl.create :template_info_with_template, name: 'Offer', output_format: :pdf }
+        let(:template_name) { 'Offer' }
+        let(:template_params) { {} }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['message']).to eq('param is missing or the value is empty: template_params')
+        end
       end
     end
   end
