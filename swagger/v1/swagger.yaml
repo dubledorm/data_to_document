@@ -527,7 +527,15 @@ paths:
           type: string
       responses:
         '200':
-          description: successful
+          description: Stream png file
+        '400':
+          description: arguments error. Invalid barcode value
+          content:
+            application/json:
+              examples:
+                Invalid barcode value:
+                  value:
+                    message: data not valid
   "/cdn/documents/{template_name}":
     parameters:
     - name: template_name
