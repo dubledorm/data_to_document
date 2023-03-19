@@ -2,6 +2,8 @@
 
 require 'swagger_helper'
 require 'swagger_descriptions'
+require 'compare_pdf_helper'
+require 'pdf_request_cases'
 
 RSpec.describe 'cdn/pdf', type: :request do
 
@@ -14,55 +16,31 @@ RSpec.describe 'cdn/pdf', type: :request do
       parameter name: :options, in: :body, schema: { '$ref' => '#/components/schemas/options' }
       examples_body_html_to_pdf
 
-      response(200, 'Stream. Returns the pdf file. ') do
-        let!(:options) do
-          { "options": {
-            "html_text": '<!DOCTYPE html><html><head></head><body>Hellow world!</body></html>',
-            "header_html": '<!DOCTYPE html><html><head></head><body>This is header</body></html>',
-            "footer_html": '<!DOCTYPE html><html><head></head><body>This is footer</body></html>',
-            "orientation": 'Landscape',
-            "page_size": 'Letter',
-            "margin": { "top": 50 }
-          } }
-        end
+      PdfRequest::POSITIVE_CASES.each do |test_case|
+        response(200, test_case[:title]) do
+          let!(:options) { test_case[:options] }
 
-        run_test! do |response|
-          #TODO файлы отличаются датой создания, которая записана в них как CreationDate (D:20230316132022-04'00')
-          # Надо удалить дату и сравнить файлы
-          #expect(response.body).to eq(File.open('spec/fixtures/simple_example.pdf', 'rb').read)
+          run_test! do |response|
+            expect(pdf_equal?(response.body,
+                              File.open(File.join(PdfRequest::FIXTURES_PATH,
+                                                  test_case[:expected_result_file_name]), 'rb').read)).to be_truthy
+          end
         end
       end
 
-      response(200, 'Stream. Returns the pdf file. ') do
-        let!(:options) do
-          { "options": {
-            "html_text": '<!DOCTYPE html><html><head></head><body>Hellow world!</body></html>',
-            "header_html": '<!DOCTYPE html><html><head></head><body>Date <span class="date"></span> Time <span class="time"></span> Sitepage <span class="sitepage"></span></body></html>',
-            "footer_html": '<!DOCTYPE html><html><head></head><body>Page <span class="page"></span> of <span class="topage"></span> Webpage <span class="webpage"></span></body></html>'
-          } }
+      PdfRequest::NEGATIVE_CASES.each do |test_case|
+        response(test_case[:response_status], test_case[:title]) do
+          example 'application/json', test_case[:title], {
+            message: test_case[:expected_message]
+          }, test_case[:example_name], test_case[:example_description]
+          schema '$ref' => '#/components/schemas/error_response'
+          let!(:options) { test_case[:options] }
+
+          run_test! do |response|
+            data = JSON.parse(response.body)
+            expect(data['message']).to eq(test_case[:expected_message])
+          end
         end
-
-        run_test!
-      end
-
-
-      response '400', 'bad arguments' do
-        example 'application/json', :simple_response, {
-          message: "[\"Html text can't be blank\"]"
-        }, 'Не заполнен параметр', 'Параметр html_text должен быть заполнен'
-        schema '$ref' => '#/components/schemas/error_response'
-        let!(:options) do
-          { "options": {
-            "html_text": '',
-            "header_html": '<!DOCTYPE html><html><head></head><body>This is header</body></html>',
-            "footer_html": '<!DOCTYPE html><html><head></head><body>This is footer</body></html>',
-            "orientation": 'Landscape',
-            "page_size": 'Letter',
-            "margin": { "top": 50 }
-          } }
-        end
-
-        run_test!
       end
     end
   end

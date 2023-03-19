@@ -8,8 +8,7 @@ module PdfConcern
     begin
       pdf_params = HtmlToPdf::PdfFromStringParams.new(params.required(:options))
     rescue StandardError => e
-      raise ArgumentError, e.message unless pdf_params.valid?
-
+      raise ArgumentError, e.message
     end
     raise ArgumentError, pdf_params.errors.full_messages unless pdf_params.valid?
 
