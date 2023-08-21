@@ -80,3 +80,4 @@ gem 'rswag-api'
 gem 'rswag-ui'
 gem 'draper'
 gem 'combine_pdf'
+gem "rqrcode", "~> 2.0"

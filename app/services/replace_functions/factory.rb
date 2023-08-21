@@ -9,7 +9,8 @@ module ReplaceFunctions
                                      'xls' => 'xls' }.freeze
     TAG_OPTION_TO_FUNCTION_NAME = { 'asbarcode' => 'Barcode',
                                     'astable' => 'Table',
-                                    'astablewithtemplate' => 'TableWithTemplate'}.freeze
+                                    'asqrcode' => 'QrCode',
+                                    'astablewithtemplate' => 'TableWithTemplate' }.freeze
     DEFAULT_FUNCTION_NAME = 'Simple'
 
     def self.build(tag_and_arguments_hash, output_format)
