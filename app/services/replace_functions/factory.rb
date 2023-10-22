@@ -6,6 +6,7 @@ module ReplaceFunctions
   class Factory
 
     OUTPUT_FORMAT_TO_MODULE_NAME = { 'pdf' => 'html',
+                                     'docx' => 'docx',
                                      'xls' => 'xls' }.freeze
     TAG_OPTION_TO_FUNCTION_NAME = { 'asbarcode' => 'Barcode',
                                     'astable' => 'Table',

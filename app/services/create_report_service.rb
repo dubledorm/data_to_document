@@ -7,7 +7,7 @@ class CreateReportService
   def self.call(template_name, report_params)
     template_info = TemplateInfoService.find_by_name!(template_name)
     generator_class = "ReportGenerators::#{template_info.output_format.to_s.camelize}Generator".constantize
-    generator_class.new(template_info, report_params).generate
+    [generator_class.new(template_info, report_params).generate, template_info.output_format]
   rescue NameError => e
     raise ArgumentError,
           "Could not find ReportGenerator class for report output_format #{template_info.output_format}, message: #{e.message}"

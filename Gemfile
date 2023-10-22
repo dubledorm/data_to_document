@@ -81,3 +81,5 @@ gem 'rswag-ui'
 gem 'draper'
 gem 'combine_pdf'
 gem "rqrcode", "~> 2.0"
+gem 'rubyzip'
+gem 'nokogiri'

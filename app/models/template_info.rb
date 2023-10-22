@@ -6,7 +6,7 @@ class TemplateInfo
   include Mongoid::Document
 
   #  STATE_VALUES = %i[new stable].freeze
-  OUTPUT_FORMAT_VALUES = %i[pdf xls].freeze
+  OUTPUT_FORMAT_VALUES = %i[pdf xls docx].freeze
 
   field :name, type: String
   field :rus_name, type: String

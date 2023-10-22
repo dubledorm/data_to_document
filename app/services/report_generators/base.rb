@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'strscan'
+require 'replace_functions/base'
 
 module ReportGenerators
 
@@ -8,6 +9,7 @@ module ReportGenerators
   # template_info - запись о шаблоне из БД
   # report_params_dictionary - hash параметров для функций замены
   class Base
+    REG_EXP_FIND_TAGS = /#\[[^\]]+\]/.freeze
 
     def initialize(template_info, report_params_dictionary)
       @template_info = template_info

@@ -4,8 +4,6 @@ module ReportGenerators
 
   # Генератор для pdf
   class PdfGenerator < Base
-    REG_EXP_FIND_TAGS = /#\[[^\]]+\]/.freeze
-
     def replace_tags_in_template(_template)
       remaining_str = _template
       result = ''
